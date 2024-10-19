@@ -1,7 +1,7 @@
 //Depend upon abstractions, not concretions
+// Classes should depend on interfaces rather than concrete classes
 
 /*
-
 In our applications we can differentiate between two types of classes:
 
 -> Low level classes which do operations like reading from a database or saving a file.

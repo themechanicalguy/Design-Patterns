@@ -1,3 +1,8 @@
+/**
+ * This Principle states that software entites like class should be able to extend a class behaviour without modifying it.
+ * This Principles seperated the existing code from modified code to provide better stability, maintainability,
+     and minimize the changes in the code.
+ */
 //As JS dont have enums
 let Color = Object.freeze({
   red: "red",

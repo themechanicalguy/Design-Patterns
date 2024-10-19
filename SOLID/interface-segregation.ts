@@ -1,4 +1,4 @@
-// Clients shouldn’t be forced to depend on methods they do not use.
+// Interface should be defined in such a way that,Clients shouldn’t be forced to depend on methods they do not use.
 /*
  It states that “do not force any client to implement an interface which is irrelevant to them“
 
