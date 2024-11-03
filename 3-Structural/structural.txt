@@ -1,0 +1,24 @@
+-> Structural Design Pattern is a way to combine or arrange different classes and objects 
+    to form a complex or bigger structure to solve a particular req.
+    OR
+-> Structural Design Patterns are solutions in software design that focus on how classes 
+    and objects are organized to form larger, functional structures. 
+
+-> These patterns help developers simplify relationships between objects, making code more efficient,
+    flexible, and easy to maintain. By using structural patterns, you can better manage complex class 
+    hierarchies, reuse existing code, and create scalable architectures.
+
+->There are two recurring themes in these patterns:
+    -> This pattern is particularly useful for making independently developed class libraries work together.
+    -> Structural Design Patterns describe ways to compose objects to realize new functionality.
+    -> The added flexibility of object composition comes from the ability to change the composition at run-time, which is impossible with static class composition.
+
+-> Types of Design Patterns:
+
+    1- Decorator Pattern
+    2- Proxy Pattern
+    3- Composite Pattern
+    4- Adapter Pattern
+    5- Bridge Pattern
+    6- Fascade
+    7- Flyweight
