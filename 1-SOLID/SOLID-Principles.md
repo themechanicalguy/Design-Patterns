@@ -4,7 +4,6 @@ SOLID is an acronym for five object-oriented design principles that help create 
 
 # 1. Single Responsibility Principle (SRP):
 
-- The **Single Responsibility Principle** (SRP) is one of the five SOLID principles of object-oriented design, which aim to make software designs more understandable, flexible, and maintainable.
 - **Single Responsibility Principle** states that a class should have only one reason to change, meaning it should have only one responsibility or job.
 - This principle promotes high cohesion and low coupling in code, making it easier to maintain and extend.
 
@@ -23,17 +22,14 @@ Think of a restaurant kitchen:
 
 ## Use Case:
 
-**Scenario:** Imagine you’re building an e-commerce application where you need to manage orders.
+**Scenario:** Imagine you’re building an e-commerce application where you need to manage orders. An order might involve:
 
-- An order might involve:
+1. Calculating the total price.
+2. Saving the order to a database.
+3. Sending a confirmation email to the customer.
 
-  1. Calculating the total price.
-  2. Saving the order to a database.
-  3. Sending a confirmation email to the customer.
-
-**Without SRP**, you might create a single Order class that handles all these tasks.However, this violates SRP because the class has multiple responsibilities (price calculation, database operations, and email sending).
-
-**Applying SRP**, you’d split these responsibilities into separate classes, each handling one task.
+- **Violating SRP**, you might create a single Order class that handles all these tasks.However, this violates SRP because the class has multiple responsibilities (price calculation, database operations, and email sending).
+- **SRP Design**, you’d split these responsibilities into separate classes, each handling one task.
 
 ### Example: Violating SRP
 
@@ -84,7 +80,7 @@ order.sendConfirmationEmail("customer@example.com"); // Output: Sending email to
 - Testing the `Order` class is complex because you need to mock database and email services to test price calculations.
 - The class is **tightly coupled to multiple concerns**, making it _fragile_ and _hard to maintain_.
 
-### Improved Example: With SRP
+### SRP Compliant
 
 ```typescript
 // Responsibility 1: Manage order data and calculate total
@@ -180,12 +176,12 @@ orderProcessor.processOrder(order, "customer@example.com");
 - It states that software entities (classes, modules, functions, etc.) should be open for extension but closed for modification.
 - This means you should be able to extend a system's behavior without modifying its existing code, thereby reducing the risk of introducing bugs into stable, tested code.
 
-## Explanation of OCP
-
-**Open for Extension:** You can add new functionality by creating new classes, modules, or components (e.g., through inheritance, interfaces, or composition).
-**Closed for Modification:** The existing code (e.g., a base class or module) should not need to be changed when new functionality is added.
+## Key Idea
 
 The OCP promotes designing systems that are flexible and maintainable by relying on abstractions (like interfaces or abstract classes) rather than concrete implementations.
+
+- **Open for Extension:** You can add new functionality by creating new classes, modules, or components (e.g., through inheritance, interfaces, or composition).
+- **Closed for Modification:** The existing code (e.g., a base class or module) should not need to be changed when new functionality is added.
 
 ## Real-Life Analogy
 
@@ -196,13 +192,13 @@ Think of a power strip (extension cord):
 
 Similarly, in software, you define an interface or abstract class (like the power strip’s plug socket) that new components can "plug into" without changing the core system.
 
-## Use Case
+## Use Case:
 
 - Considering our e-commerce system that calculates discounts for different types of customers (e.g., regular, premium, or VIP customers).
 - Initially, you might hardcode discount logic for each customer type. However, if a new customer type (e.g., "student") is introduced, you’d need to modify the existing discount calculator class, which violates OCP.(Apple Student Discount Plan)
-- Instead, OCP encourages designing the system so you can add new discount types without altering the existing code.
+- Instead, `OCP encourages designing the system so you can add new discount types without altering the existing code`.
 
-### Example: Without OCP || Violating OCP
+### Violating OCP
 
 ```typescript
 class DiscountCalculator {
@@ -226,7 +222,7 @@ console.log(calculator.calculateDiscount("premium", 100)); // 20
 
 **Problem:** If you want to add a new customer type (e.g., "student" with a 15% discount), you must modify the DiscountCalculator class, violating OCP.
 
-### Example: With OCP
+### OCP Compliant
 
 Using an interface and polymorphism, we can make the system open for extension and closed for modification.
 
@@ -322,7 +318,7 @@ console.log(studentCalculator.calculateDiscount(100)); // 15
 
 - If class `B` is a subtype of class `A`, then we should be able to replace `A` with `B` without disrupting the behavior of our program.
 
-# Real-World Analogy
+## Real-World Analogy
 
 Imagine a Bird superclass with a `fly()` method.
 
@@ -331,69 +327,64 @@ Imagine a Bird superclass with a `fly()` method.
 
 Solution: Redesign inheritance (e.g., FlightlessBird subclass for Penguin).
 
-### Violation of LSP
+## Violating LSP :
 
 ```typescript
 class Bird {
-    void fly() {
-        System.out.println("Flying...");
-    }
+  fly() {
+    console.log("Flying...");
+  }
 }
 
 class Penguin extends Bird {
-    @Override
-    void fly() {
-        throw new UnsupportedOperationException("Penguins can't fly!");
-    }
+  fly() {
+    throw new Error("Penguins can't fly!");
+  }
 }
 
-public class Main {
-    public static void makeBirdFly(Bird bird) {
-        bird.fly(); // Crashes if given a Penguin!
-    }
-
-    public static void main(String[] args) {
-        Bird sparrow = new Bird();
-        Bird penguin = new Penguin();
-
-        makeBirdFly(sparrow); // ✅ Works
-        makeBirdFly(penguin); // ❌ Throws exception (LSP violated)
-    }
+function makeBirdFly(bird: Bird) {
+  bird.fly(); // Crashes if given a Penguin!
 }
+
+// Main execution
+const sparrow = new Bird();
+const penguin = new Penguin();
+
+makeBirdFly(sparrow); // ✅ Works
+makeBirdFly(penguin); // ❌ Throws exception (LSP violated)
 ```
 
-### With LSP
+## LSP Compliant :
 
 ```typescript
 class Bird {
-    // Common bird behaviors
+  shit() {
+    console.log("Shitting...");
+  }
 }
 
 class FlyingBird extends Bird {
-    void fly() {
-        System.out.println("Flying...");
-    }
+  fly() {
+    console.log("Flying...");
+  }
 }
 
 class Penguin extends Bird {
-    void swim() {
-        System.out.println("Swimming...");
-    }
+  swim() {
+    console.log("Swimming...");
+  }
 }
 
-public class Main {
-    public static void makeBirdFly(FlyingBird bird) {
-        bird.fly(); // Only accepts flying birds
-    }
-
-    public static void main(String[] args) {
-        FlyingBird sparrow = new FlyingBird();
-        Penguin penguin = new Penguin();
-
-        makeBirdFly(sparrow); // ✅ Works
-        // makeBirdFly(penguin); // ❌ Compile-time error (correctly prevented)
-    }
+function makeBirdFly(bird: FlyingBird) {
+  bird.fly(); // Only accepts flying birds
 }
+
+// Main execution
+const sparrow = new FlyingBird();
+const penguin = new Penguin();
+
+makeBirdFly(sparrow); // ✅ Works
+// makeBirdFly(penguin); // ❌ Compile-time error (correctly prevented)
 ```
 
 ## Advantages of LSP
@@ -422,7 +413,7 @@ public class Main {
 
 LSP ensures that **inheritance is used correctly**, preventing unexpected behavior when substituting objects.
 
-# Interface Segregation Principle (ISP) in SOLID
+# 4.Interface Segregation Principle (ISP) in SOLID
 
 The **Interface Segregation Principle** states that `do not force any client to implement an interface which is irrelevant to them`.
 In other words, it's better to have many small, specific interfaces than one large, general-purpose interface.
@@ -439,7 +430,7 @@ Interface should be defined in such a way that,Clients shouldn’t be forced to 
 
 Instead of having one "fat" interface with many methods, we should break it down into smaller, more focused interfaces so that classes only need to implement the methods they actually need.
 
-- The idea behind this principle is that it is better to have smaller and more specific interfaces rather than a big interface.
+- The idea behind this principle is that `it is better to have smaller and more specific interfaces rather than a big interface`.
 - If we had just one interface that covered a lot of features, clients of that interface would have to implement behavior that they didn't need.
 - Instead, if we have smaller interfaces, clients can implement just the needed behavior.
 - Another advantage is that when we update an interface, the changes will affect less clients, so there is less risk of breaking the code.
@@ -569,29 +560,27 @@ console.log("drinks:", nonVegCustomer.getDrinks());
 4. **Clearer intent**: Each interface has a single, well-defined responsibility
 5. **Reduced coupling**: Dependencies are minimized to only what's necessary
 
-### **Dependency Inversion Principle (DIP) Explained**
+# 5. Dependency Inversion Principle (DIP)
 
 The Dependency Inversion Principle (DIP) introduced by Robert C. Martin focuses on decoupling software modules to make systems more flexible, maintainable, and testable.
 
+- **Dependency Inversion Principle** states- High-level modules (which contain business logic or core functionality) should not depend on low-level modules (which handle details like data access or I/O). Instead, both should depend on abstractions (e.g., interfaces or abstract classes).
+- Abstractions should not depend on details. Details (concrete implementations) should depend on abstractions.
+
 #### **Key Idea**
 
-- `High-level modules (which contain business logic) should not depend on low-level modules` (which handle implementation details).
-- Both should depend on abstractions (e.g., interfaces or abstract classes). **Abstractions** should not depend on details. Instead, details (concrete implementations) should depend on abstractions.
-
-Code Example: Without DIP
-
-In this version, the TV is tightly coupled to a specific Samsung remote, making it inflexible.
+Instead of high-level modules directly depending on low-level modules, both rely on a shared abstraction. This reduces tight coupling, making the system more flexible, testable, and maintainable.
 
 **Real life analogy**
 
-- A TV RemoteImagine you have a TV (high-level module) that needs to work with a remote control (low-level module).
+A TV RemoteImagine you have a TV (high-level module) that needs to work with a remote control (low-level module).
 
-**Violating DIP:** The TV is designed to work only with a specific brand’s remote (e.g., a Samsung remote). If you lose the remote or want to use a different brand’s remote, the TV won’t work unless you redesign it. This is inflexible and tightly coupled.
-**DIP Design:** The TV depends on a standard remote interface (e.g., buttons for power, volume, and channels). Any remote—Samsung, LG, or a universal remote—can control the TV as long as it follows the interface. The TV doesn’t care about the remote’s brand, making it flexible and reusable.
+- **Violating DIP:** The TV is designed to work only with a specific brand’s remote (e.g., a Samsung remote). If you lose the remote or want to use a different brand’s remote, the TV won’t work unless you redesign it. This is inflexible and tightly coupled.
+- **DIP Design:** The TV depends on a standard remote interface (e.g., buttons for power, volume, and channels). Any remote—Samsung, LG, or a universal remote—can control the TV as long as it follows the interface. The TV doesn’t care about the remote’s brand, making it flexible and reusable.
 
-## Example
+## Code Example: Violating DIP
 
-**Violating DIP:**
+In this version, the TV is tightly coupled to a specific Samsung remote, making it inflexible.
 
 ```typescript
 // Concrete low-level module
@@ -617,7 +606,7 @@ const tv = new TV();
 tv.control("Power"); // Output: Samsung remote: Power pressed
 ```
 
-**DIP Design:**
+**DIP Complaint**
 
 ```typescript
 // Abstraction (interface-like behavior in JavaScript)
@@ -662,13 +651,6 @@ samsungTV.control("Power"); // Output: Samsung remote: Power pressed
 const lgTV = new TV(new LGRemote());
 lgTV.control("Volume Up"); // Output: LG remote: Volume Up pressed
 ```
-
-## Explanation
-
-**Abstraction:** The Remote class acts as an abstract base class (interface-like in JavaScript). It defines the pressButton method that all concrete remotes must implement.
-**Concrete Implementations:** SamsungRemote and LGRemote extend Remote and provide specific implementations of pressButton.
-**High-Level Module:** The TV class depends on the Remote abstraction, not a specific remote. You can pass any remote (Samsung, LG, or even a universal remote) as long as it follows the Remote interface.
-**Flexibility:** You can easily add new remotes (e.g., UniversalRemote) without changing the TV class.
 
 ## Advantages:
 
