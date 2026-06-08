@@ -56,7 +56,7 @@ class Order {
   sendConfirmationEmail(customerEmail: string): void {
     console.log(
       `Sending email to ${customerEmail} with order details:`,
-      this.items
+      this.items,
     );
     // Simulate email sending
   }
@@ -109,7 +109,7 @@ class EmailService {
   sendConfirmationEmail(customerEmail: string, order: Order): void {
     console.log(
       `Sending email to ${customerEmail} with order details:`,
-      order.items
+      order.items,
     );
     // Simulate email sending
   }
@@ -119,7 +119,7 @@ class EmailService {
 class OrderProcessor {
   constructor(
     private orderRepository: OrderRepository,
-    private emailService: EmailService
+    private emailService: EmailService,
   ) {}
 
   processOrder(order: Order, customerEmail: string): void {
@@ -172,9 +172,12 @@ orderProcessor.processOrder(order, "customer@example.com");
 
 # 2. Open/Closed Principle (OCP)
 
-- The **Open/Closed Principle** is one of the five SOLID principles of object-oriented design, introduced by Robert C. Martin.
-- It states that software entities (classes, modules, functions, etc.) should be open for extension but closed for modification.
+The **Open/Closed Principle** is one of the five SOLID principles of object-oriented design, introduced by Robert C. Martin.
+
+- It states that software entities (classes, modules, functions, etc.) should be **open for extension but closed for modification**.
 - This means you should be able to extend a system's behavior without modifying its existing code, thereby reducing the risk of introducing bugs into stable, tested code.
+
+![OCP: Open/Closed Principle Violation vs Correct Design](./images/ocp_violation_vs_correct.svg)
 
 ## Key Idea
 
@@ -314,6 +317,8 @@ console.log(studentCalculator.calculateDiscount(100)); // 15
 - The **Liskov Substitution Principle** states that objects of a superclass should be replaceable with objects of its subclasses without breaking the application.
 - In other words, a derived class should extend its base class without changing its behavior.
 
+![LSP: Liskov Substitution Principle Violation vs Correct Design](./images/lsp_violation_vs_correct.svg)
+
 ## Key Idea
 
 - If class `B` is a subtype of class `A`, then we should be able to replace `A` with `B` without disrupting the behavior of our program.
@@ -418,23 +423,13 @@ LSP ensures that **inheritance is used correctly**, preventing unexpected behavi
 The **Interface Segregation Principle** states that `do not force any client to implement an interface which is irrelevant to them`.
 In other words, it's better to have many small, specific interfaces than one large, general-purpose interface.
 
+![ISP: Fat Interface Violation vs Segregated Interfaces](./images/isp_violation_vs_correct.svg)
+
 **Real life analogy**
 
 - Suppose if you enter a restaurant and you are pure vegetarian.
 - The waiter in that restaurant gave you the menu card which includes vegetarian items,
   non-vegetarian items, drinks, and sweets.
-
-## Key Idea
-
-Interface should be defined in such a way that,Clients shouldn’t be forced to depend on methods they do not use.
-
-Instead of having one "fat" interface with many methods, we should break it down into smaller, more focused interfaces so that classes only need to implement the methods they actually need.
-
-- The idea behind this principle is that `it is better to have smaller and more specific interfaces rather than a big interface`.
-- If we had just one interface that covered a lot of features, clients of that interface would have to implement behavior that they didn't need.
-- Instead, if we have smaller interfaces, clients can implement just the needed behavior.
-- Another advantage is that when we update an interface, the changes will affect less clients, so there is less risk of breaking the code.
-- Remember that a class can implement multiple interfaces, so there is no need to include everything in just one interface.
 
 ## Violating ISP
 
@@ -552,113 +547,122 @@ console.log("drinks:", nonVegCustomer.getDrinks());
 2. **Multi-role systems**: Where objects can have different roles with different behaviors
 3. **Large codebases**: To prevent "interface pollution" where interfaces become too large
 
-## Key Benefits of the ISP-Compliant Design:
+## Advantages
 
-1. **No forced implementations**: Clients only implement interfaces they actually need
-2. **Better maintainability**: Changes to one interface don't affect unrelated clients
-3. **More flexible**: Classes can combine only the interfaces they need
-4. **Clearer intent**: Each interface has a single, well-defined responsibility
-5. **Reduced coupling**: Dependencies are minimized to only what's necessary
+- **No forced implementations**: Clients only implement interfaces they actually need
+- **Better maintainability**: Changes to one interface don't affect unrelated clients
+- **More flexible**: Classes can combine only the interfaces they need
+- **Clearer intent**: Each interface has a single, well-defined responsibility
+- **Reduced coupling**: Dependencies are minimized to only what's necessary
+- **Smaller blast radius** changing IRefundHandler doesn't recompile or affect OnlineCheckout at all.
+
+## Disadvantages
+
+- **Interface proliferation** : splitting too aggressively can leave you with dozens of tiny interfaces, which makes navigating the codebase harder.
+- **Grouping judgment calls** : generateReport and exportCSV belong together in IReportExporter, but it's not always obvious where to draw the line.
+- **Refactoring cost** : if you started with a fat interface and it's already widely implemented, splitting it is a breaking change across the codebase.
+- **Over-engineering for simple cases** : a small internal utility class with one implementor doesn't need an interface at all.
 
 # 5. Dependency Inversion Principle (DIP)
 
-The Dependency Inversion Principle (DIP) introduced by Robert C. Martin focuses on decoupling software modules to make systems more flexible, maintainable, and testable.
+The Dependency Inversion Principle (DIP) introduced by Robert C. Martin focuses on decoupling software modules to make systems more **flexible, maintainable, and testable**.
 
-- **Dependency Inversion Principle** states- High-level modules (which contain business logic or core functionality) should not depend on low-level modules (which handle details like data access or I/O). Instead, both should depend on abstractions (e.g., interfaces or abstract classes).
+![Dependency Inversion Principle: DIP Violation vs Correct Design](./images/dip_solid_overview.svg)
+
+It states two rules:
+
+- High-level modules should not depend on low-level modules. Both should depend on abstractions.
 - Abstractions should not depend on details. Details (concrete implementations) should depend on abstractions.
 
-#### **Key Idea**
-
-Instead of high-level modules directly depending on low-level modules, both rely on a shared abstraction. This reduces tight coupling, making the system more flexible, testable, and maintainable.
-
-**Real life analogy**
-
-A TV RemoteImagine you have a TV (high-level module) that needs to work with a remote control (low-level module).
-
-- **Violating DIP:** The TV is designed to work only with a specific brand’s remote (e.g., a Samsung remote). If you lose the remote or want to use a different brand’s remote, the TV won’t work unless you redesign it. This is inflexible and tightly coupled.
-- **DIP Design:** The TV depends on a standard remote interface (e.g., buttons for power, volume, and channels). Any remote—Samsung, LG, or a universal remote—can control the TV as long as it follows the interface. The TV doesn’t care about the remote’s brand, making it flexible and reusable.
+In other words , High-level modules which contain business logic or core functionality should not depend on low-level modules which handle details like data access or I/O. Instead, both should depend on abstractions (e.g., interfaces or abstract classes).
 
 ## Code Example: Violating DIP
 
 In this version, the TV is tightly coupled to a specific Samsung remote, making it inflexible.
 
 ```typescript
-// Concrete low-level module
-class SamsungRemote {
-  pressButton(action) {
-    console.log(`Samsung remote: ${action} pressed`);
+// Low-level module (detail)
+class MySQLDatabase {
+  save(data: string): void {
+    console.log(`Saving "${data}" to MySQL`);
   }
 }
 
-// High-level module directly depends on SamsungRemote
-class TV {
+// High-level module — DIRECTLY depends on MySQLDatabase
+class OrderService {
+  private db: MySQLDatabase;
+
   constructor() {
-    this.remote = new SamsungRemote(); // Tight coupling to SamsungRemote
+    this.db = new MySQLDatabase(); // ❌ hardwired — can't swap without editing this class
   }
 
-  control(action) {
-    this.remote.pressButton(action);
+  placeOrder(item: string): void {
+    this.db.save(item);
   }
 }
 
-// Usage
-const tv = new TV();
-tv.control("Power"); // Output: Samsung remote: Power pressed
+const svc = new OrderService();
+svc.placeOrder("Laptop");
 ```
 
-**DIP Complaint**
+## DIP - depend on an abstraction
 
 ```typescript
-// Abstraction (interface-like behavior in JavaScript)
-class Remote {
-  pressButton(action) {
-    throw new Error("Method 'pressButton()' must be implemented.");
+// 1. Define the abstraction (interface)
+interface IDatabase {
+  save(data: string): void;
+}
+
+// 2. Low-level modules implement the interface
+class MySQLDatabase implements IDatabase {
+  save(data: string): void {
+    console.log(`[MySQL] Saving: ${data}`);
   }
 }
 
-// Concrete implementation: SamsungRemote
-class SamsungRemote extends Remote {
-  pressButton(action) {
-    console.log(`Samsung remote: ${action} pressed`);
+class PostgresDatabase implements IDatabase {
+  save(data: string): void {
+    console.log(`[Postgres] Saving: ${data}`);
   }
 }
 
-// Concrete implementation: LGRemote
-class LGRemote extends Remote {
-  pressButton(action) {
-    console.log(`LG remote: ${action} pressed`);
+class InMemoryDatabase implements IDatabase {
+  private store: string[] = [];
+  save(data: string): void {
+    this.store.push(data);
+    console.log(`[InMemory] Stored: ${data}`);
   }
 }
 
-// High-level module depends on the abstraction
-class TV {
-  constructor(remote) {
-    if (!(remote instanceof Remote)) {
-      throw new Error("TV requires a Remote instance");
-    }
-    this.remote = remote; // Depends on abstraction, not concrete class
-  }
+// 3. High-level module depends ONLY on the interface
+class OrderService {
+  constructor(private db: IDatabase) {} // ✅ injected via constructor
 
-  control(action) {
-    this.remote.pressButton(action);
+  placeOrder(item: string): void {
+    this.db.save(item);
   }
 }
 
-// Usage
-const samsungTV = new TV(new SamsungRemote());
-samsungTV.control("Power"); // Output: Samsung remote: Power pressed
+// 4. Wire up at composition root (main / app bootstrap)
+const mysqlSvc = new OrderService(new MySQLDatabase());
+const postgresSvc = new OrderService(new PostgresDatabase());
+const testSvc = new OrderService(new InMemoryDatabase()); // ✅ easy to test
 
-const lgTV = new TV(new LGRemote());
-lgTV.control("Volume Up"); // Output: LG remote: Volume Up pressed
+mysqlSvc.placeOrder("Laptop");
+postgresSvc.placeOrder("Phone");
+testSvc.placeOrder("Tablet");
 ```
 
 ## Advantages:
 
-**Flexibility:** The TV works with any remote (Samsung, LG, etc.) as long as it follows the Remote interface.
-**Testability:** You can pass a mock remote for testing the TV’s behavior without using a real remote.
-**Maintainability:** Adding a new remote type doesn’t require changing the TV class.
+- **Flexibility:** The TV works with any remote (Samsung, LG, etc.) as long as it follows the Remote interface.
+- **Testability:** You can pass a mock remote for testing the TV’s behavior without using a real remote.
+- **Maintainability:** Adding a new remote type doesn’t require changing the TV class.
+- **Swappability** : swap any implementation (database, API client, mailer) without touching business logic.
+- **Parallel development**: teams can work on the interface and implementations independently.
 
 ## Disadvantages
 
-**Added Complexity:** The Remote abstraction adds a layer of code, which might feel unnecessary for a very simple system (e.g., if you’re sure you’ll only ever use one remote type).
-**Design Effort:** You need to define the Remote interface upfront, which requires a bit more planning.
+- **Added Complexity:** The Remote abstraction adds a layer of code (more boilerplate), which might feel unnecessary for a very simple system (e.g., if you’re sure you’ll only ever use one remote type).
+- **Design Effort:** You need to define the Remote interface upfront, which requires a bit more planning.
+- **Over-engineering risk** : for small scripts or throwaway code, introducing interfaces adds friction without payoff.
