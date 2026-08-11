@@ -1,14 +1,12 @@
-## Command Pattern – Interview Notes
+# Command Pattern
 
-### What is it?
-
-The **Command pattern** turns a request (like "delete this" or "move that") into a first-class object. This object encapsulates the action, including all information needed to perform it and, crucially, **how to undo it**. This allows you to store, queue, log, or replay actions.
+- The **Command pattern** turns a request (like "delete this" or "move that") into a first-class object. 
+- This object encapsulates the action, including all information needed to perform it and, crucially, **how to undo it**. 
+- This allows you to store, queue, log, or replay actions.
 
 > **Core idea**: Separate the _decision_ to perform an action from the _execution_ of that action.
 
----
-
-### Simple Example: Text Editor Undo/Redo
+## Simple Example: Text Editor Undo/Redo
 
 ```javascript
 // 1. The Receiver (the thing being acted upon)
@@ -102,11 +100,13 @@ history.undo(); // "Hello, world"
 history.redo(); // "Hello,"
 ```
 
-**Key insight**: The `History` class doesn't know _how_ to insert or delete text. It just knows that every command has `execute()` and `undo()` methods. This decoupling is the pattern's power.
+**Key insight**: 
 
----
+- The `History` class doesn't know _how_ to insert or delete text. 
+- It just knows that every command has `execute()` and `undo()` methods. This decoupling is the pattern's power.
 
-### Modern Variants You're Already Using
+
+## Modern Variants You're Already Using
 
 | Variant                  | Example                                              | How It's a Command                                                   |
 | ------------------------ | ---------------------------------------------------- | -------------------------------------------------------------------- |
@@ -115,9 +115,8 @@ history.redo(); // "Hello,"
 | **State Machine Events** | `machine.send({ type: 'SUBMIT' })`                   | Event is the command, transition table is the receiver               |
 | **Job Queues**           | BullMQ job with `name: 'send-email'` and `data`      | Job spec is a serialized command                                     |
 
----
 
-### When to Use
+## When to Use
 
 - **Undo/Redo** is required (the classic case)
 - **Queuing, scheduling, or logging** actions (e.g., background jobs, analytics events)
@@ -125,40 +124,31 @@ history.redo(); // "Hello,"
 - **Macro recording** (record a sequence of commands to replay later)
 - **You need to support "optimistic updates"** (apply locally, reconcile later)
 
----
-
-### When NOT to Use
+## When NOT to Use
 
 - A simple **function callback** does the job (no need for the object overhead)
 - **Only one place** calls the action and you never need undo/queue/logging
 - Commands become **too large/complex** (e.g., capturing entire application state for undo)
 
----
 
-### Advantages
+## Advantages
 
-| Advantage                           | Explanation                                                                               |
-| ----------------------------------- | ----------------------------------------------------------------------------------------- |
-| **Decouples invoker from receiver** | The invoker (e.g., `History`) doesn't need to know about specific actions or their logic. |
-| **Makes undo/redo straightforward** | Each command carries its own undo logic, enabling a simple stack.                         |
-| **Enables queuing and logging**     | Commands are objects you can store, serialize, and replay.                                |
-| **Supports macro commands**         | Combine multiple commands into one (e.g., "MacroCommand") for bulk operations.            |
-| **Facilitates optimistic UI**       | Apply a command locally, then reconcile with server response.                             |
+**Decouples invoker from receiver** — The invoker (e.g., `History`) doesn't need to know about specific actions or their logic.
+**Makes undo/redo straightforward** — Each command carries its own undo logic, enabling a simple stack.
+**Enables queuing and logging** — Commands are objects you can store, serialize, and replay.
+**Supports macro commands** — Combine multiple commands into one (e.g., "MacroCommand") for bulk operations.
+**Facilitates optimistic UI** — Apply a command locally, then reconcile with server response.
 
----
 
-### Disadvantages
+## Disadvantages
 
-| Disadvantage                               | Mitigation                                                                                                   |
-| ------------------------------------------ | ------------------------------------------------------------------------------------------------------------ |
-| **Adds complexity and boilerplate**        | Use simple functions for fire-and-forget actions; only wrap in command when needed.                          |
-| **Memory overhead** (history stack grows)  | Limit history size; store only minimal data needed for undo (e.g., store `removed` text, not full document). |
-| **Stale undo** issues                      | Store snapshots of the minimal affected data at execution time.                                              |
-| **Class explosion** (many command classes) | Use a discriminated union object (`{ type, payload }`) instead of separate classes.                          |
+**Adds complexity and boilerplate** — Use simple functions for fire-and-forget actions; only wrap in command when needed.
+**Memory overhead** (history stack grows) — Limit history size; store only minimal data needed for undo (e.g., store `removed` text, not full document).
+**Stale undo** issues — Store snapshots of the minimal affected data at execution time.
+**Class explosion** (many command classes) — Use a discriminated union object (`{ type, payload }`) instead of separate classes.
 
----
 
-### Command vs. Strategy vs. Callback
+## Command vs. Strategy vs. Callback
 
 | Aspect             | Command                           | Strategy                                    | Callback                               |
 | ------------------ | --------------------------------- | ------------------------------------------- | -------------------------------------- |
@@ -167,16 +157,11 @@ history.redo(); // "Hello,"
 | **Has state?**     | Yes (holds payload and undo data) | Usually stateless                           | Encloses scope                         |
 | **Supports undo?** | Yes (core feature)                | No                                          | No                                     |
 
----
 
-### Interview Tips
+## Interview Tips
 
 1. **Key phrase**: "The Command pattern turns actions into objects, which gives you the ability to **store, queue, log, and undo** them."
-
 2. **Classic example**: Always mention **undo/redo in a text editor**. It's the textbook example and clearly demonstrates the `execute`/`undo` interface.
-
 3. **Modern equivalents**: Point out that Redux actions, GraphQL mutations, and state machine events are all commands. This shows you recognize the pattern beyond the GoF book.
-
 4. **When to choose a simple callback**: Emphasize that you _wouldn't_ use a command for everything. A plain function is better when you don't need the extra capabilities.
-
 5. **Handling serialization**: Commands should be serializable (JSON) for network transmission or persistent storage. Avoid storing large object graphs or functions in them.

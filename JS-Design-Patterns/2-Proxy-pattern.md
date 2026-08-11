@@ -1,8 +1,6 @@
 # Proxy Pattern
 
-## Quick Definition
-
-- A Proxy is an object that acts as a stand-in or intermediary for another object, allowing you to intercept and control how properties are accessed or modified.
+- A Proxy is an object that acts as a stand-in for another object, allowing you to intercept and control how properties are accessed or modified.
 
 ## Core Use Cases (What You Should Know)
 
@@ -21,8 +19,6 @@
 - **Simplicity would suffice** — Use regular getter/setter methods instead
 - **Hot loops** — Don't proxy in tight loops (benchmarks show 2-10x slowdown)
 - **Complex logic better in class** — Heavy validation belongs in setters/methods, not proxies
-
----
 
 ## Interview Scenario & Responses
 
@@ -55,8 +51,6 @@ userProxy.age = "25"; // ❌ Throws error
 
 But honestly—for most cases, a simple setter method on a class is clearer and performs better."
 
----
-
 ### Scenario 2: "When would you actually use Proxy in production?"
 
 **Strong Answer:**
@@ -84,8 +78,6 @@ const apiCache = new Proxy(new Map(), {
 
 Another: **Framework-level reactivity** (Vue uses this heavily). But for business logic? Class methods are usually clearer."
 
----
-
 ### Scenario 3: "What's the performance impact of using Proxy?"
 
 **Strong Answer:**
@@ -104,8 +96,6 @@ Another: **Framework-level reactivity** (Vue uses this heavily). But for busines
 - Occasional config object access
 
 **My rule:** Profile first. If it's not a bottleneck, the code clarity matters more than 1ms overhead."
-
----
 
 ## Key Implementation Details
 
@@ -151,8 +141,6 @@ const proxy = new Proxy(obj, {
   set: (target, prop, value) => Reflect.set(target, prop, value),
 });
 ```
-
----
 
 ## Red Flags in Code Review
 
@@ -210,26 +198,19 @@ const appState = new Proxy(
 );
 ```
 
----
-
 ## Interview Talking Points
 
 ### What to Say:
 
 ✅ "Proxies are powerful but overused. I reach for them only when intercepting property access is genuinely necessary."
-
 ✅ "Performance matters. Proxy adds overhead—I benchmark if it's in a hot path."
-
 ✅ "For frameworks like Vue, Proxy enables reactivity elegantly. But for app code, class setters/methods are usually clearer."
-
 ✅ "If a Proxy handler does heavy work, that's a code smell. The logic should probably live elsewhere."
 
 ### What NOT to Say:
 
 ❌ "Proxies are great for everything" (they're not)
-
 ❌ "I use Proxy for all object validation" (overkill)
-
 ❌ "Performance isn't a concern with Proxy" (it is)
 
 ---

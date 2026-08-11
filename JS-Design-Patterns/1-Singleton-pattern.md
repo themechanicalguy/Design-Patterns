@@ -1,12 +1,10 @@
 # Singleton Pattern
 
-## 1. CORE CONCEPT & DEFINITION
+- A Singleton is an object that exists exactly once for the lifetime of your application.
+- Every caller gets the same instance—same state, same methods, same identity.
+- It ensures centralized control over a shared resource.
 
-### What to Say:
-
-"A Singleton is an object that exists exactly once for the lifetime of your application. Every caller gets the same instance—same state, same methods, same identity. It ensures centralized control over a shared resource."
-
-### Real-World Use Cases:
+## Real-World Use Cases:
 
 - **Database connection pool** — You never want two pools draining the same database
 - **Feature flag service** — Loaded once, served everywhere
@@ -18,9 +16,7 @@
 
 **Always lead with the problem it solves, not the implementation**. This shows architectural thinking, not just coding knowledge.
 
----
-
-## 2. IMPLEMENTATION APPROACHES
+## EXAMPLE
 
 ### A. Class-Based Singleton (Traditional)
 
@@ -67,8 +63,6 @@ class FeatureFlags {
 - **Lazy initialization (`??=`)** — Instance created only when first requested
 - **Identity guarantee** — `===` comparison always returns true for the same instance
 
----
-
 ### B. Module-Scoped State (Modern Approach) ⭐
 
 ```javascript
@@ -101,8 +95,6 @@ export function isEnabled(name) {
 ### Interview Position:
 
 "For 90% of 'I need one of these' problems, I'd use module-scoped state. It's simpler, more testable, and leverages JavaScript's module system rather than fighting against it."
-
----
 
 ## 3. CRITICAL INTERVIEW PITFALLS & TRADE-OFFS
 
@@ -155,8 +147,6 @@ afterEach(() => {
 3. Leveraging module resets if using module-scoped state
 4. Or better yet, avoiding the pattern entirely when possible"
 
----
-
 ### B. Hidden Coupling & Implicit Dependencies
 
 **The Problem:**
@@ -181,8 +171,6 @@ function processOrder(order, logger) {
 
 **Interview Quote:**
 "I avoid using `getInstance()` calls buried deep in code. It violates the explicit dependency principle. Instead, I inject dependencies through constructor or function parameters—the contract is visible in the signature."
-
----
 
 ### C. Server-Side State Leakage (Critical for Full-Stack Roles)
 

@@ -1,7 +1,6 @@
 # Module Pattern
 
 - The Module Pattern in modern JavaScript means **ES modules**—a file-based scoping system where anything not exported is private by default.
-- No closures tricks needed; the language provides privacy built-in.
 
 **Core principles:**
 
@@ -9,8 +8,6 @@
 2. Anything not exported is private.
 3. A module evaluates once per realm. Every importer sees the same bindings.
 4. Imports are static (hoisted); `import()` is dynamic (promise-based).
-
----
 
 ## Interview Scenarios & Responses
 
@@ -298,8 +295,6 @@ Component.render();
 <!-- Browser fetches these in parallel, ready when app.js runs -->
 ```
 
----
-
 ## Red Flags in Code Review
 
 ### ❌ Too Many Named Exports
@@ -356,8 +351,6 @@ import { utils } from "@company/lib/dist/helpers/utils.js";
 
 **Better:** Define in package.json exports, let consumers do `import { utils } from '@company/lib/utils'`.
 
----
-
 ## Common Pitfalls
 
 ### Live Bindings (Counter-intuitive from CommonJS)
@@ -403,31 +396,21 @@ import { config } from "./config.js"; // Waits for fetch!
 
 **Only use top-level await for critical setup, not in every module.**
 
----
-
 ## Interview Talking Points
 
 ### What to Say:
 
 ✅ "ES modules are built-in; no closures tricks needed for privacy."
-
 ✅ "Named exports by default—clearer API, better tree-shaking."
-
 ✅ "The `exports` field in package.json controls API surface and conditional builds."
-
 ✅ "Dynamic imports are for route-based code splitting—significant performance wins."
-
 ✅ "Bundlers handle the complexity; I focus on logical module boundaries."
 
 ### What NOT to Say:
 
 ❌ "CommonJS is outdated" (Node still supports it; interop matters)
-
 ❌ "Split every function into its own file" (premature modularization)
-
 ❌ "I don't care about exports field" (it's security + API control)
-
----
 
 ## When to Split Into a New Module
 
@@ -443,8 +426,6 @@ import { config } from "./config.js"; // Waits for fetch!
 
 **Avoid pre-splitting.** Split when reuse is real, not theoretical.
 
----
-
 ## Bundlers & Tree-Shaking
 
 Modern bundlers all handle ESM similarly. Pick based on your framework:
@@ -458,13 +439,9 @@ Modern bundlers all handle ESM similarly. Pick based on your framework:
 
 **Tree-shaking requirement:** Modules must be side-effect-free or marked `"sideEffects": false` in package.json.
 
----
-
 ## Interview Closer
 
 "The Module Pattern in modern JavaScript is just ES modules—file-based scoping with explicit privacy. As a lead, I focus on logical module boundaries: one concept per file, minimal exports, and using the `exports` field to control what consumers can access. Dynamic imports are a free performance win for code splitting, and bundlers handle the rest."
-
----
 
 ## Checklist Before Interview
 
@@ -478,8 +455,6 @@ Modern bundlers all handle ESM similarly. Pick based on your framework:
 ✅ Know circular dependency risks and how to mitigate  
 ✅ Understand top-level await implications  
 ✅ Can articulate module boundaries decision criteria
-
----
 
 ## One-Liner Summary
 

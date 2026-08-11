@@ -1,12 +1,10 @@
-## Flyweight Pattern
+# Flyweight Pattern
 
-### What is it?
-
-A structural pattern that **saves memory and improves performance** by sharing immutable data (intrinsic state) across many objects, while keeping unique data (extrinsic state) separate and passed in when needed.
+- A structural pattern that **saves memory and improves performance** by sharing immutable data (intrinsic state) across many objects, while keeping unique data (extrinsic state) separate and passed in when needed.
 
 > **Core idea**: Instead of storing the same data in 50,000 objects, store it once and have all objects point to it.
 
-### The Split: Intrinsic vs. Extrinsic State
+## The Split: Intrinsic vs. Extrinsic State
 
 | Intrinsic (Shared, Immutable) | Extrinsic (Unique, Passed In) |
 | ----------------------------- | ----------------------------- |
@@ -19,9 +17,7 @@ A structural pattern that **saves memory and improves performance** by sharing i
 - **Intrinsic**: author name, avatar, color, role (same for every message by that user)
 - **Extrinsic**: message body, timestamp, screen position (unique per message)
 
----
-
-### Simple Example
+## Simple Example
 
 ```javascript
 // 1. Flyweight Factory - creates and caches shared objects
@@ -98,9 +94,7 @@ console.log("Unique author objects:", factory.count()); // Only 30!
 // Memory saved: 49,970 author objects not duplicated
 ```
 
----
-
-### Where Flyweight Matters Today
+## Where Flyweight Matters Today
 
 | Use Case                  | What's Shared (Intrinsic)          | What's Unique (Extrinsic)             |
 | ------------------------- | ---------------------------------- | ------------------------------------- |
@@ -111,66 +105,48 @@ console.log("Unique author objects:", factory.count()); // Only 30!
 | **Immutable.js/Immer**    | Unchanged tree branches            | Modified path only                    |
 | **V8 Hidden Classes**     | Object shape (properties in order) | Actual property values                |
 
----
 
-### When to Use
+## When to Use
 
 - Rendering **tens of thousands of similar objects** (virtual lists, canvas, WebGL)
 - **Expensive construction** of shared objects (Intl formatters, regex compilation)
 - **High GC pressure** from creating/destroying many objects
 - When objects have clear **immutable shared data** and **mutable unique data**
 
----
-
-### When NOT to Use
+## When NOT to Use
 
 - Only **a few objects** — pool overhead costs more than savings
 - **Shared data changes** — mutable flyweights cause bugs (always freeze!)
 - **Construction is cheap** — `{x, y}` point pool is slower than just allocating
 - **Keys are unbounded** — Map will leak memory without eviction strategy
 
----
+## Advantages
 
-### Advantages
+- **Massive memory savings** — 50k objects share 30 flyweights instead of 50k copies.
+- **Reduced GC pressure** — Fewer allocations = less work for garbage collector.
+- **Faster rendering** — Hot path passes small extrinsic state; shared data is a pointer.
+- **Identity works** — `author1 === author2` works if same key.
+- **Enables optimization** — Engines optimize hidden classes when objects have identical shapes.
 
-| Advantage                  | Explanation                                                        |
-| -------------------------- | ------------------------------------------------------------------ |
-| **Massive memory savings** | 50k objects share 30 flyweights instead of 50k copies              |
-| **Reduced GC pressure**    | Fewer allocations = less work for garbage collector                |
-| **Faster rendering**       | Hot path passes small extrinsic state; shared data is a pointer    |
-| **Identity works**         | `author1 === author2` works if same key                            |
-| **Enables optimization**   | Engines optimize hidden classes when objects have identical shapes |
+## Disadvantages
 
----
+**Mutability bug risk** — `Object.freeze()` the flyweight.
+**Cache invalidation/eviction** — Use `WeakMap` for automatic GC; implement LRU for bounded caches.
+**Memory leaks** — Strong Map prevents GC; prefer `WeakMap` when keys are objects.
+**Indirection/complexity** — Adds factory and lookup; don't use for simple cases.
+**Harder to debug** — Shared object changed in one place affects all; freeze prevents this.
 
-### Disadvantages
-
-| Disadvantage                    | Mitigation                                                           |
-| ------------------------------- | -------------------------------------------------------------------- |
-| **Mutability bug risk**         | `Object.freeze()` the flyweight                                      |
-| **Cache invalidation/eviction** | Use `WeakMap` for automatic GC; implement LRU for bounded caches     |
-| **Memory leaks**                | Strong Map prevents GC; prefer `WeakMap` when keys are objects       |
-| **Indirection/complexity**      | Adds factory and lookup; don't use for simple cases                  |
-| **Harder to debug**             | Shared object changed in one place affects all; freeze prevents this |
-
----
-
-### Interview Tips
+## Interview Tips
 
 1. **Contrast with Object Pool**: Pool reuses objects to avoid allocation (e.g., database connections); Flyweight shares immutable data across many objects simultaneously.
-
 2. **Name-drop modern variants**:
    - Intl.NumberFormat caching
    - Three.js InstancedMesh
    - Tailwind's atomic CSS
    - V8 hidden classes
-
 3. **Key phrase**: "Flyweight is about **sharing** immutable data; Object Pool is about **reusing** any object."
-
 4. **The factory is critical**: It enforces "one key → one flyweight" invariant. Without it, identity comparisons break.
-
 5. **Watch for leaks**: If keys are unbounded (e.g., user IDs), use `WeakMap` (keys are objects) or implement LRU eviction.
-
 6. **When asked for examples**:
    - Chat app with 50k messages, 30 authors
    - Currency formatter cache

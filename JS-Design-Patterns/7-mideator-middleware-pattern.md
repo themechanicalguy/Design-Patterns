@@ -1,19 +1,16 @@
-## Mediator Pattern – Interview Notes
-
-### What is it?
+# Mediator Pattern
 
 - A mediator is an object that sits in the middle of components, coordinating communication between them.
 - Instead of components knowing about each other directly (which creates **N² connections**), every component talks **only to the mediator** — each has exactly one line of communication.
 
 > **Analogy**: A moderator in a chat room — every message goes through them, they enforce rules, and participants don't need to know each other by name.
 
-### Core Idea
+## Core Idea
 
-The mediator **owns the workflow logic** — it decides what happens next based on current state. Components have a tiny contract with the mediator (e.g., call `notify()` with an event), but they don't know which component comes next or make decisions about the flow.
+- The mediator **owns the workflow logic** — it decides what happens next based on current state. 
+- Components have a tiny contract with the mediator (e.g., call `notify()` with an event), but they don't know which component comes next or make decisions about the flow.
 
----
-
-### Mediator vs. Related Patterns
+## Mediator vs. Related Patterns
 
 | Pattern                 | Direction                       | Owns Logic?                  | Components Know About It?        |
 | ----------------------- | ------------------------------- | ---------------------------- | -------------------------------- |
@@ -23,9 +20,7 @@ The mediator **owns the workflow logic** — it decides what happens next based 
 
 **Quick test**: If the middle thing **makes decisions**, it's a mediator. If it just routes messages without inspecting them, it's a bus. If it simplifies access to something complicated without coordinating multiple parties, it's a facade.
 
----
-
-### When to Use
+## When to Use
 
 - **3+ components** that interact with non-trivial rules
 - **Multi-step workflows:** form wizards, checkout flows, upload with pause/resume/cancel
@@ -34,36 +29,26 @@ The mediator **owns the workflow logic** — it decides what happens next based 
 
 **Progressive complexity**: Start with a simple mediator → evolve to middleware pipeline → graduate to a **state machine** (like XState) for genuinely complex coordination.
 
----
-
-### When NOT to Use
+## When NOT to Use
 
 - Only **2 components** that always talk to each other — direct call is simpler
 - One-off events with no coordination — plain event bus or callback is enough
 - Pipelines where every step always runs in order — simple function composition is clearer
 - The mediator adds more overhead than value — "below 3 components, it's overhead"
 
----
+## Advantages
 
-### Advantages
+**Reduces coupling** — Components don't import each other; change one component doesn't ripple through the system.
+**Centralized logic** — Business rules / workflow live in one place — easy to change (e.g., skip address step for B2B accounts in one branch).
+**Improves testability** — Mediator can be tested in isolation; components can be tested with a mock mediator.
+**Single responsibility** — Each component focuses on its own UI/presentation; mediator handles coordination.
 
-| Advantage                 | Explanation                                                                                                           |
-| ------------------------- | --------------------------------------------------------------------------------------------------------------------- |
-| **Reduces coupling**      | Components don't import each other; change one component doesn't ripple through the system                            |
-| **Centralized logic**     | Business rules / workflow live in one place — easy to change (e.g., skip address step for B2B accounts in one branch) |
-| **Improves testability**  | Mediator can be tested in isolation; components can be tested with a mock mediator                                    |
-| **Single responsibility** | Each component focuses on its own UI/presentation; mediator handles coordination                                      |
+## Disadvantages
 
----
-
-### Disadvantages
-
-| Disadvantage                                                                                                      | Mitigation                                                                  |
-| ----------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
-| **God-object risk** — mediator becomes a 4,000-line monolith                                                      | Split by domain (`CheckoutMediator`, `UploadMediator`, `ChatMediator`)      |
-| **Hard to trace at runtime** — "what happens when I click this?" becomes a detective story                        | Structured logging with correlation IDs; state-machine visualizers (XState) |
-| **Re-entrant notifications** — synchronous emits cause surprising recursion                                       | Queue events with `queueMicrotask` so each finishes before the next starts  |
-| **Components secretly knowing each other** (importing for "just the type," event names encoding other components) | Watch for it in code reviews                                                |
+**God-object risk** — mediator becomes a 4,000-line monolith. Split by domain (`CheckoutMediator`, `UploadMediator`, `ChatMediator`).
+**Hard to trace at runtime** — "what happens when I click this?" becomes a detective story. Structured logging with correlation IDs; state-machine visualizers (XState).
+**Re-entrant notifications** — synchronous emits cause surprising recursion. Queue events with `queueMicrotask` so each finishes before the next starts.
+**Components secretly knowing each other** (importing for "just the type," event names encoding other components) — Watch for it in code reviews.
 
 ## Example
 
@@ -230,9 +215,7 @@ bob.send("Buy now $$$", "Alice");
 console.log("📜 Chat history:", chatRoom.getHistory());
 ```
 
----
-
-### What's Better?
+## What's Better?
 
 | Aspect             | Without Mediator                   | With Mediator                       |
 | ------------------ | ---------------------------------- | ----------------------------------- |
@@ -245,7 +228,7 @@ console.log("📜 Chat history:", chatRoom.getHistory());
 
 ---
 
-### Key Takeaway
+## Key Takeaway
 
 **Components (Users) → talk ONLY to Mediator (ChatRoom) → Mediator owns all coordination logic**
 
@@ -253,8 +236,6 @@ console.log("📜 Chat history:", chatRoom.getHistory());
 - ✅ Easy to add new users
 - ✅ Single place to change business rules
 - ❌ Mediator can become bloated (split into `SpamFilter`, `Logger`, `Router` if needed)
-
----
 
 ### Interview Tips
 
